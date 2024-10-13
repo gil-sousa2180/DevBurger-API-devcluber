@@ -1,5 +1,5 @@
-import Sequelize from "sequelize";
-import mongoose from "mongoose";
+import Sequelize from 'sequelize';
+import mongoose from 'mongoose';
 
 import configDatabase from '../config/database';
 

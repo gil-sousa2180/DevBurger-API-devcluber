@@ -11,7 +11,7 @@ const OrderSchema = new mongoose.Schema({
             required: true,
         },
     },
-    products: [
+    product: [
         {
             id: {
                 type: Number,
@@ -42,8 +42,8 @@ const OrderSchema = new mongoose.Schema({
     status: {
         type: String,
         required: true,
-       },
     },
+},
     {
         timestamps: true,
     },

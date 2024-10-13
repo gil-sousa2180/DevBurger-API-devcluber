@@ -2,12 +2,13 @@ import * as Yup from 'yup';
 import Order from '../schemas/Order';
 import Product from '../models/Product';
 import Category from '../models/Category';
-
-
+import User from '../models/User';
 class OrderController {
     async store(req, res) {
         const schema = Yup.object({
-            products: Yup.array().required().of(
+            products: Yup.array()
+            .required()
+            .of(
                 Yup.object({
                     id: Yup.number().required(),
                     quantity: Yup.number().required(),
@@ -65,6 +66,40 @@ class OrderController {
         const createdOrder = await Order.create(order);
 
         return res.status(201).json(createdOrder);
+    }
+
+    async index( req, res) {
+        const orders = await Order.find();
+
+        return res.json(orders);
+    }
+
+    async update(req, res) {
+        const schema = Yup.object({
+           status: Yup.string().required()
+        });
+
+        try {
+            schema.validateSync(req.body, { abortEarly: false });
+        } catch (err) {
+            return res.status(400).json({ error: err.errors });
+        }
+
+        const { admin: isAdmin } = await User.findByPk(req.userId);
+
+        if(!isAdmin) {
+            return res.status(401).json({ message: 'Not unauthorized!'})
+        }
+
+        const { id } = req.params;
+        const { status } = req.body;
+
+        try {
+            await Order.updateOne({ _id: id }, { status });
+        }catch (err) {
+            return res.status(400).json({ error: err.message });
+        }
+        return res.json({ message: 'Status update sucessfully!' });
     }
 }
 
